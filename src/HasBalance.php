@@ -2,10 +2,14 @@
 
 namespace Batv45\Balance;
 
-use Cknow\Money\Money;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Support\Arr;
 
+/**
+ * @mixin Model
+ * @property int balance
+ */
 trait HasBalance
 {
     /**
@@ -27,24 +31,25 @@ trait HasBalance
      */
     public function getIntBalanceAttribute()
     {
-        return (int) $this->balance;
+        return (int)$this->balance;
     }
 
     /**
      * Increase the balance amount.
      *
-     * @param  int $amount
-     * @param  array $parameters
-     * @return \Batv45\Balance\Balance
+     * @param int $amount
+     * @param string|null $description
+     * @param Model|null $referenceable
+     * @return Balance
      */
     public function increaseBalance(int $amount, string $description = null, Model $referenceable = null)
     {
         $arr = [];
 
-        if( $description != null)
-            $arr = Arr::add( $arr, 'description', $description);
-        if( $referenceable != null)
-            $arr = Arr::add( $arr, 'reference', $referenceable);
+        if ($description != null)
+            $arr = Arr::add($arr, 'description', $description);
+        if ($referenceable != null)
+            $arr = Arr::add($arr, 'reference', $referenceable);
 
         return $this->createBalanceHistory($amount, $arr);
     }
@@ -52,18 +57,19 @@ trait HasBalance
     /**
      * Decrease the balance amount
      *
-     * @param  int $amount
-     * @param  array $parameters
-     * @return \Batv45\Balance\Balance
+     * @param int $amount
+     * @param string|null $description
+     * @param Model|null $referenceable
+     * @return Balance
      */
     public function decreaseBalance(int $amount, string $description = null, Model $referenceable = null)
     {
         $arr = [];
 
-        if( $description != null)
-            $arr = Arr::add( $arr, 'description', $description);
-        if( $referenceable != null)
-            $arr = Arr::add( $arr, 'reference', $referenceable);
+        if ($description != null)
+            $arr = Arr::add($arr, 'description', $description);
+        if ($referenceable != null)
+            $arr = Arr::add($arr, 'reference', $referenceable);
 
         return $this->createBalanceHistory(-1 * abs($amount), $arr);
     }
@@ -71,9 +77,9 @@ trait HasBalance
     /**
      * Modify the balance sheet with the given value.
      *
-     * @param  int $amount
-     * @param  array $parameters
-     * @return \Batv45\Balance\Balance
+     * @param int $amount
+     * @param array $parameters
+     * @return Balance
      */
     public function modifyBalance(int $amount, array $parameters = [])
     {
@@ -83,9 +89,9 @@ trait HasBalance
     /**
      * Reset the balance to 0 or set a new value.
      *
-     * @param  int|null $newAmount
-     * @param  array $parameters
-     * @return \Batv45\Balance\Balance
+     * @param int|null $newAmount
+     * @param array $parameters
+     * @return Balance|bool
      */
     public function resetBalance(int $newAmount = null, $parameters = [])
     {
@@ -101,7 +107,7 @@ trait HasBalance
     /**
      * Check if there is a positive balance.
      *
-     * @param  int $amount
+     * @param int $amount
      * @return bool
      */
     public function hasBalance(int $amount = 1)
@@ -122,9 +128,9 @@ trait HasBalance
     /**
      * Function to handle mutations (increase, decrease).
      *
-     * @param  int $amount
-     * @param  array  $parameters
-     * @return \Batv45\Balance\Balance
+     * @param int $amount
+     * @param array $parameters
+     * @return Balance
      */
     protected function createBalanceHistory(int $amount, array $parameters = [])
     {
@@ -149,7 +155,7 @@ trait HasBalance
     /**
      * Get all Balance History.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     * @return MorphMany
      */
     public function balanceHistory()
     {

@@ -4,6 +4,7 @@ namespace Batv45\Balance;
 
 use DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Balance extends Model
 {
@@ -19,6 +20,10 @@ class Balance extends Model
         'referenceable_type',
         'referenceable_id',
         'description',
+    ];
+
+    protected $casts = [
+        'amount' => 'integer'
     ];
 
     /**
@@ -52,7 +57,7 @@ class Balance extends Model
     /**
      * Get the parent of the balance record.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     * @return MorphTo
      */
     public function balanceable()
     {
@@ -62,14 +67,10 @@ class Balance extends Model
     /**
      * Obtain the model for which the balance sheet movement was made
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphTo
+     * @return MorphTo
      */
     public function referenceable()
     {
         return $this->morphTo();
     }
-
-    protected $casts = [
-        'amount' => 'integer'
-    ];
 }
