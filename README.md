@@ -7,7 +7,7 @@ Maintains a history of balance movements in the eloquent models. This simple pac
 You can install the package via composer:
 
 ``` bash
-composer require batv45/laravel-balance
+composer require cyberwolfstudio/laravel-balance
 ```
 You can publish and run the migrations with:
 
